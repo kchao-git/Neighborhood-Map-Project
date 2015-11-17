@@ -7,3 +7,21 @@ html, body {
 #map {
 	height: 100%;
 }
+
+.marker-list {
+	position: absolute;
+	height: 100%;
+	width: 20%;
+	min-width: 300px;
+	z-index: 1;
+	background-color: rgba(0, 0, 0, 0.9);
+	color: #fff;
+}
+
+.marker-list ul {
+	list-style: none;
+}
+
+.error {
+
+}
