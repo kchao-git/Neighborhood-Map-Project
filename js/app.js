@@ -16,7 +16,7 @@ var AppViewModel = function() {
 	self.filterText = ko.observable();
 	
 	//Create Map
-	var mapCanvas = $('#map').get(0);
+	var mapCanvas = $('#map-canvas').get(0);
 	var mapOptions = {
 		center: {lat: 44.5403, lng: -78.5463},
 		zoom: 8
@@ -44,6 +44,10 @@ var AppViewModel = function() {
 			}
 		});
 	});
+
+	$('.menu').click(function(){
+		$( ".marker-list" ).slideToggle("slow", function(){});
+	})
 };
 
 //Marker class to handle creating Google Map marker and toggle visibility for the list view
@@ -68,9 +72,3 @@ function initMap() {
 function googleError() {
 	$('.error').text('Unable to load Google Maps');
 }
-
-
-
-
-
-

@@ -2,11 +2,14 @@
 <html>
 <head>
 	<title>Neighborhood Map Project</title>
-
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 </head>
 <body>
-	<section class="error"></section>
+	<header>
+		<i class="fa fa-bars fa-lg menu"></i><span class="error"></span>
+	</header>
 
 	<section class="marker-list">
 		<div class="search-bar">
@@ -19,9 +22,7 @@
 		</ul>
 	</section>
 
-	<section id="map"></section>
-
-	
+	<section id="map-canvas"></section>
 	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
 	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>

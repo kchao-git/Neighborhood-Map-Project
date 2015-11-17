@@ -3,16 +3,43 @@ html, body {
 	margin: 0;
 	padding: 0;
 }
-		
-#map {
+
+header {
+	background-color: rgba(0, 0, 0, 0.9);
+	height: 36px;
+	color: #fff;
+}
+
+header .menu {
+	padding: 10px 15px;
+	cursor: pointer;
+}
+
+header .error {
+	margin-left: 36px;
+}
+
+.map {
 	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+#map-canvas {
+	height: auto;
+	position: absolute;
+	top: 36px;
+	bottom: 0px;
+	right: 0px;
+	left: 0px;
 }
 
 .marker-list {
+	display:none;
 	position: absolute;
 	height: 100%;
-	width: 20%;
-	min-width: 300px;
+	width: 50%;
+	max-width: 300px;
 	z-index: 1;
 	background-color: rgba(0, 0, 0, 0.9);
 	color: #fff;
@@ -20,8 +47,4 @@ html, body {
 
 .marker-list ul {
 	list-style: none;
-}
-
-.error {
-
 }
