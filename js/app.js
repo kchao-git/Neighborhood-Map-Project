@@ -2,10 +2,19 @@
 
 //Map Markers  
 var markerData = [
-	{title: 'Avocado', position: {lat: 44, lng: -78}},
-	{title: 'Banana', position: {lat: 45, lng: -79}},
-	{title: 'Avocado', position: {lat: 43, lng: -80}}
-];
+	{id: 0, title: 'Baja Fish Tacos', position: {lat: 33.697738, lng: -117.887827}, foursquareid: '4bd2509877b29c74dd958e82'},
+	{id: 1, title: 'Kickin Crab', position: {lat: 33.6995000000, lng: -117.8852600000}, foursquareid: '4cb8b1aef50e224b3ad0e8fb'},
+	{id: 2, title: 'Chipotle', position: {lat: 33.6983980000, lng: -117.8852340000}, foursquareid: '4a99bb80f964a520203020e3'},
+	{id: 3, title: 'Taqueria El Zamorano', position: {lat: 33.716332, lng: -117.877320}, foursquareid: '54349e5c498e1873d1a55d9c'},
+	{id: 4, title: 'Clemente Seafood', position: {lat: 33.699704, lng: -117.869242}, foursquareid: '4cb219101168a0932f7b3823'}
+]
+
+var numLocation = markerData.length;
+
+//DOM Elements
+var $markerListItems = $('.marker-list-item');
+var $errorMessage = $('.error');
+var $mapCanvas = $('#map-canvas');
 
 //ViewModel
 var AppViewModel = function() {
@@ -21,9 +30,20 @@ var AppViewModel = function() {
 	//Set up Markers
 	setMarkers(markerData, self.markerList, self.map);
 
+	//Set up InfoWindow
+	//self.infoWindow = createInfoWindow();
+
 	//Listener for search/filter bar. Toggles visibility for both the marker and list view item
 	self.filterText.subscribe(function(input) {
 		console.log("textInput: " + input);
+
+		$markerListItems.removeClass('selected');
+		//clear all bounce animations
+		ko.utils.arrayForEach(self.markerList(), function(marker){
+			marker.googleMarker.setAnimation(null);
+			marker.infoWindow.close();
+		});
+		//self.infoWindow.close();
 
 		ko.utils.arrayForEach(self.markerList(), function(marker){
 			if(marker.googleMarker.getTitle().toLowerCase().indexOf(input) < 0){
@@ -34,6 +54,7 @@ var AppViewModel = function() {
 				marker.visible(true);
 			}
 		});
+		$markerListItems = $('.marker-list-item');
 	});
 
 	//Toggle marker list
@@ -43,26 +64,28 @@ var AppViewModel = function() {
 
 	//Handle clicks on marker list items.
 	//Highlight selected item from marker list
-	$('body').on('click', '.marker-list-item', function(){
+	/*$('body').on('click', '.marker-list-item', function(){
 		var $selectedMarker = $(this);
 		if($selectedMarker.hasClass('selected')){
 			$selectedMarker.removeClass('selected');
 		} else {
-			$('.marker-list-item').removeClass('selected');
+			
+			$markerListItems.removeClass('selected');
 			$selectedMarker.addClass('selected');
 		}
-	});
+	});*/
 
 	//Toggles map marker when item from marker list is clicked
 	self.selectMarker = function(e) {
-		toggleMarker(e.googleMarker);
+
+		toggleMarker(e);
 	};
 };
 
+//declare ko's viewmodel for reference
 var viewModel;
 
 //Google Map Functions
-
 //Marker class to handle creating Google Map marker and toggle visibility for the list view
 function Marker(data, map) {
 	var self = this;
@@ -73,16 +96,43 @@ function Marker(data, map) {
 		title: data.title
 	});
 
-	self.googleMarker.addListener('click', markerListener);
+	self.infoWindow = new google.maps.InfoWindow({
+		content: '<h2>' + data.title + '</h2>'
+	});
+
+	self.infoWindow.addListener('closeclick', function(){
+		//Remove highlight from marker list to avoid confusion
+		//$markerListItems.removeClass('selected');
+
+		//clear all bounce animations
+		//ko.utils.arrayForEach(viewModel.markerList(), function(marker){
+		//	marker.googleMarker.setAnimation(null);
+		//});
+		toggleMarker(self);
+	});
+
+	self.googleMarker.addListener('click', function(){
+			//Remove highlight from marker list to avoid confusion
+			//$markerListItems.removeClass('selected');
+
+			//Toggle animation and infowindow on selected marker
+			toggleMarker(self);
+	});
 
 	self.visible = ko.observable(true);
+
+	self.selected = ko.observable(false);
+
+	self.setInfoContent = function(content) {
+		self.infoWindow.setContent('<h2>' + self.googleMarker.getTitle() + '</h2>' + content);
+	};
 }
 
 function createMap() {
-	var mapCanvas = $('#map-canvas').get(0);
+	var mapCanvas = $mapCanvas.get(0);
 	var mapOptions = {
-		center: {lat: 44.5403, lng: -78.5463},
-		zoom: 8
+		center: {lat: 33.709664, lng: -117.876967},
+		zoom: 13
 	};
 	return new google.maps.Map(mapCanvas, mapOptions);
 }
@@ -90,32 +140,29 @@ function createMap() {
 function setMarkers(data, markerList, map) {
 	data.forEach(function(marker, index){
 		var markerObj = new Marker(marker, map);
-		//markerObj.googleMarker.addListener('click', self.selectMapMarker);
 		markerList.push(markerObj);
 	});
 }
 
-//
-function toggleMarker(markerObj){
-	if(markerObj.getAnimation() !== null) {
-		markerObj.setAnimation(null);
+//Toggles selection of map markers
+function toggleMarker(marker){
+
+	if(marker.selected()){
+		//unselect marker, stop animation, close infowindow
+		marker.selected(false);
+		marker.googleMarker.setAnimation(null);
+		marker.infoWindow.close();
 	} else {
-		//clear all bounce animations
-		ko.utils.arrayForEach(viewModel.markerList(), function(marker){
-			marker.googleMarker.setAnimation(null);
+		//clear other selections and select marker
+		ko.utils.arrayForEach(viewModel.markerList(), function(markers){
+			markers.googleMarker.setAnimation(null);
+			markers.infoWindow.close();
+			markers.selected(false);
 		});
-
-		markerObj.setAnimation(google.maps.Animation.BOUNCE);
+		marker.selected(true);
+		marker.googleMarker.setAnimation(google.maps.Animation.BOUNCE);
+		marker.infoWindow.open(viewModel.map, marker.googleMarker);
 	}
-}
-
-//Click listener function for map markers
-function markerListener() {
-	//Remove highlight from marker list to avoid confusion
-	$('.marker-list-item').removeClass('selected');
-
-	//Toggle animation and infowindow on selected marker
-	toggleMarker(this);
 }
 
 //Callback function for Google Maps
@@ -123,9 +170,37 @@ function initMap() {
 	viewModel = new AppViewModel();
 	//Start viewmodel once Google Maps API has loaded successfully
 	ko.applyBindings(viewModel);
+
+	//initialize dynamic DOM elements
+	$markerListItems = $('.marker-list-item');
+
+	//get data from foursquare
+	getLocationData(markerData[0]);
 }
 
 //Google error handling function
 function googleError() {
-	$('.error').text('Unable to load Google Maps');
+	$errorMessage.text('Unable to load Google Maps');
+}
+
+//Foursquare API
+function getLocationData(data) {
+	var nextIndex = data.id + 1;
+	var venueid = data.foursquareid;
+	var requestUrl = 'https://api.foursquare.com/v2/venues/'+ venueid + '?oauth_token=EGRINEY0X2INPJMNRSSLI2LIFFGBAEKBD3JNEDQ1GWDPFJND&v=20151118';
+
+	$.ajax({
+		url: requestUrl
+	}).done(function(response) {
+		var venueinfo = response.response.venue;
+		var content = '<span class="rating">Rating: ' + venueinfo.rating + '</span>';
+		viewModel.markerList()[data.id].setInfoContent(content);
+
+		//Get Location Data for the next marker in the list
+		if(nextIndex < numLocation) {
+			getLocationData(markerData[nextIndex]);
+		}
+	}).fail(function(response){
+		$errorMessage.text('Unable to request data from Foursquare');
+	});
 }

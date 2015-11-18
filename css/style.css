@@ -2,10 +2,7 @@ html, body {
 	height: 100%;
 	margin: 0;
 	padding: 0;
-}
-
-hr {
-	margin: 0;
+	font-family: 'Open Sans', sans-serif;
 }
 
 header {
@@ -43,18 +40,26 @@ header .error {
 	position: absolute;
 	height: 100%;
 	width: 50%;
+	min-width: 100px;
 	max-width: 300px;
 	z-index: 1;
 	background-color: rgba(0, 0, 0, 0.9);
 	color: #fff;
 }
 
-.marker-list ul {
-	list-style: none;
-	padding: 0;
+.marker-list input {
+	width: 80%;
+	margin-left: 5%;
+	padding-left: 5%;
+	height: 24px;
 }
 
-.marker-list li {
+.marker-list table {
+	width: 100%;
+	margin-top: 10px;
+}
+
+.marker-list td {
 	padding: 10px;
 }
 

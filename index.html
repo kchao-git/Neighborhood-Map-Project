@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,700'>
 </head>
 <body>
 	<header>
@@ -13,14 +14,16 @@
 
 	<section class="marker-list">
 		<div class="search-bar">
-			<input type="text" data-bind="textInput: filterText"></input>
+			<input type="text" data-bind="textInput: filterText" placeholder="Filter Locations"></input>
 		</div>
-		<ul data-bind="foreach: markerList">
-			<li data-bind="if: visible, click: $parent.selectMarker" class="marker-list-item">
-				<span data-bind="text: googleMarker.getTitle()"></span>
-			</li>
-			<hr>
-		</ul>
+		<table data-bind="foreach: markerList">
+			<tr data-bind="if: visible">
+				<td data-bind="click: $parent.selectMarker, css: { selected: selected() }" class="marker-list-item">
+					<span data-bind="text: googleMarker.getTitle()"></span>
+				</td>
+			</tr>
+		</table>
+		
 	</section>
 
 	<section id="map-canvas"></section>
