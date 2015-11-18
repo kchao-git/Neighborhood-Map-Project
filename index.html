@@ -16,9 +16,10 @@
 			<input type="text" data-bind="textInput: filterText"></input>
 		</div>
 		<ul data-bind="foreach: markerList">
-			<li data-bind="if: visible">
+			<li data-bind="if: visible, click: $parent.selectMarker" class="marker-list-item">
 				<span data-bind="text: googleMarker.getTitle()"></span>
 			</li>
+			<hr>
 		</ul>
 	</section>
 
