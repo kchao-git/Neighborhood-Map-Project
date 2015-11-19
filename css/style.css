@@ -61,8 +61,24 @@ header .error {
 
 .marker-list td {
 	padding: 10px;
+	cursor: pointer;
+}
+
+.marker-list td:hover {
+	background-color: #333;
 }
 
 .selected {
 	background-color: #333;
+}
+
+.address {
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.details {
+	font-size: 14px;
+	font-weight: normal;
 }

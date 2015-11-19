@@ -30,9 +30,6 @@ var AppViewModel = function() {
 	//Set up Markers
 	setMarkers(markerData, self.markerList, self.map);
 
-	//Set up InfoWindow
-	//self.infoWindow = createInfoWindow();
-
 	//Listener for search/filter bar. Toggles visibility for both the marker and list view item
 	self.filterText.subscribe(function(input) {
 		console.log("textInput: " + input);
@@ -62,22 +59,8 @@ var AppViewModel = function() {
 		$( ".marker-list" ).slideToggle("slow", function(){});
 	});
 
-	//Handle clicks on marker list items.
-	//Highlight selected item from marker list
-	/*$('body').on('click', '.marker-list-item', function(){
-		var $selectedMarker = $(this);
-		if($selectedMarker.hasClass('selected')){
-			$selectedMarker.removeClass('selected');
-		} else {
-			
-			$markerListItems.removeClass('selected');
-			$selectedMarker.addClass('selected');
-		}
-	});*/
-
 	//Toggles map marker when item from marker list is clicked
 	self.selectMarker = function(e) {
-
 		toggleMarker(e);
 	};
 };
@@ -101,22 +84,11 @@ function Marker(data, map) {
 	});
 
 	self.infoWindow.addListener('closeclick', function(){
-		//Remove highlight from marker list to avoid confusion
-		//$markerListItems.removeClass('selected');
-
-		//clear all bounce animations
-		//ko.utils.arrayForEach(viewModel.markerList(), function(marker){
-		//	marker.googleMarker.setAnimation(null);
-		//});
 		toggleMarker(self);
 	});
 
 	self.googleMarker.addListener('click', function(){
-			//Remove highlight from marker list to avoid confusion
-			//$markerListItems.removeClass('selected');
-
-			//Toggle animation and infowindow on selected marker
-			toggleMarker(self);
+		toggleMarker(self);
 	});
 
 	self.visible = ko.observable(true);
@@ -193,7 +165,7 @@ function getLocationData(data) {
 		url: requestUrl
 	}).done(function(response) {
 		var venueinfo = response.response.venue;
-		var content = '<span class="rating">Rating: ' + venueinfo.rating + '</span>';
+		var content = '<div class="address">' + venueinfo.location.address +'</div><div class="details">Rating: ' + venueinfo.rating + '</div><div class="details">Price: ' + venueinfo.attributes.groups[0].summary + '</div>';
 		viewModel.markerList()[data.id].setInfoContent(content);
 
 		//Get Location Data for the next marker in the list
